@@ -62,15 +62,12 @@ def result(board, action):
     """
     new_board = copy.deepcopy(board)
     i, j = action
-    try:
-        if new_board[i][j] == EMPTY:
-            new_board[i][j] = player(board)
-        else:
-            raise ValueError
-    except IndexError:
-        print(f"Invalid action: Row: {i}, Column: {j}")
-    except ValueError:
-        print(f"Spot already taken: Row: {i}, Column: {j}")
+    if i < 0 or j < 0:
+        raise IndexError
+    if new_board[i][j] == EMPTY:
+        new_board[i][j] = player(board)
+    else:
+        raise ValueError
     return new_board
 
 def winner(board):
