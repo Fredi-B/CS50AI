@@ -5,15 +5,10 @@ Tic Tac Toe Player
 import math
 import copy
 
+
 X = "X"
 O = "O"
 EMPTY = None
-
-
-def main():
-    print(result([[X, O, X],
-            [EMPTY, X, O],
-            [EMPTY, EMPTY, EMPTY]], (0, 0)))
 
 
 def initial_state():
@@ -140,8 +135,60 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if player(board) == X:
+        _, action = max_value(board)
+    else:
+        _, action = min_value(board)
+    return action
 
 
-if __name__ == "__main__":
-    main()
+def max_value(board):
+    '''
+    Recursive function.
+    Returns the value and the optimal action of a board.
+    '''
+
+    # Return value of terminal board
+    if terminal(board):
+        return utility(board), None
+    
+    # Initial value set to -infinity
+    v = float('-inf')
+
+    # Loop through all possible actions
+    actions_set = actions(board)
+    for action in actions_set:
+        v_tmp,_ = min_value(result(board, action))
+
+        # Store the best action
+        if v_tmp > v:
+            optimal_action = action
+            v = v_tmp
+
+    return v, optimal_action
+
+
+def min_value(board):
+    '''
+    Recursive function.
+    Returns the value and the optimal action of a board.
+    '''
+
+    # Return value of terminal board
+    if terminal(board):
+        return utility(board), None
+
+    # Initial value set to infinity
+    v = float('inf')
+
+    # Loop through all possible actions
+    actions_set = actions(board)
+    for action in actions_set:
+        v_tmp,_ = max_value(result(board, action))
+
+        # Store the best action
+        if v_tmp < v:
+            optimal_action = action
+            v = v_tmp
+
+    return v, optimal_action
