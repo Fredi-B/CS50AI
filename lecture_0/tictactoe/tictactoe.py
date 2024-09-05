@@ -70,25 +70,70 @@ def result(board, action):
         raise ValueError
     return new_board
 
+
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    check_functions = [check_columns, check_rows, check_diagonals]
+    for check in check_functions:
+        ret_val = check(board)
+        if ret_val is not None:
+            return ret_val
+    return None
+
+
+def check_rows(board):
+    for row in board:
+        for i in range(len(row) - 1):
+            if row[i] is EMPTY or row[i] != row[i + 1]:
+                break
+            if i == 1:
+                return row[0]
+    return None
+
+
+def check_columns(board):
+    len_cols = len(board[0])
+    len_rows = len(board)
+    for i in range(len_cols):
+        for j in range(len_rows - 1):
+            if board[j][i] is EMPTY or board[j][i] != board[j + 1][i]:
+                break
+            if j == 1:
+                return board[0][i]
+    return None
+
+
+def check_diagonals(board):
+    if board[0][0] is not EMPTY:
+        if len(set([board[0][0], board[1][1], board[2][2]])) == 1:
+            return board[0][0]
+    if board[2][0] is not EMPTY:
+        if len(set([board[2][0], board[1][1], board[0][2]])) == 1:
+            return board[2][0]
+    return None
 
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    if winner(board):
+        return True
+    for row in board:
+        for cell in row:
+            if cell is EMPTY:
+                return False
+    return True
 
 
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    winner_val = winner(board)
+    return 1 if winner_val == X else -1 if winner_val == O else 0
 
 
 def minimax(board):
